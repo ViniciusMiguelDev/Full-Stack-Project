@@ -7,7 +7,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.fullstack.domain.Dto.ImageDTO;
 import br.com.fullstack.domain.enums.ImageExtension;
 import br.com.fullstack.domain.model.Image;
 
@@ -24,16 +23,5 @@ public class ImageMapper {
                 .file(file.getBytes())
                 .build();
         return image;
-    }
-
-    public ImageDTO imageToDTO(Image image, String url) {
-        return ImageDTO.builder()
-                .url(url)
-                .extension(image.getExtension().name())
-                .name(image.getName())
-                .uploadDate(image.getUploadDate().toLocalDate())
-                .size(image.getSize())
-                .build();
-
     }
 }

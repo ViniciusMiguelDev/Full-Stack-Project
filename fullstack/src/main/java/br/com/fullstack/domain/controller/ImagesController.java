@@ -3,7 +3,6 @@ package br.com.fullstack.domain.controller;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,9 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.fullstack.domain.Dto.ImageDTO;
 import br.com.fullstack.domain.Mapper.ImageMapper;
-import br.com.fullstack.domain.enums.ImageExtension;
 import br.com.fullstack.domain.model.Image;
 import br.com.fullstack.domain.service.ImageService;
 import lombok.extern.slf4j.Slf4j;
@@ -66,23 +63,9 @@ public class ImagesController {
         return new ResponseEntity<>(image.getFile(), headers, HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ImageDTO>> search(
-            @RequestParam(value = "extension", required = false) String extension,
-            @RequestParam(value = "query", required = false) String query) {
-
-        var result = service.search(ImageExtension.ofName(extension), query);
-        var images = result.stream().map(image -> {
-            var url = buildImageURL(image);
-            return mapper.imageToDTO(image, url.toString());
-        }).collect(Collectors.toList());
-
-        return ResponseEntity.ok(images);
-    }
-
     private URI buildImageURL(Image image) {
         String imagePath = "/" + image.getId();
-        return ServletUriComponentsBuilder.fromCurrentRequestUri().path(imagePath).build().toUri();
+        return ServletUriComponentsBuilder.fromCurrentRequest().path(imagePath).build().toUri();
     }
 
 }
